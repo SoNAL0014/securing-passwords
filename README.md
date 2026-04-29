@@ -16,7 +16,8 @@ python --version
 
 ### 2. Installation
 
-**RECOMMENDED: USE A VIRTUAL ENVIRONMENT(.venv)**
+#### RECOMMENDED: USE A VIRTUAL ENVIRONMENT(.venv)
+
 Install the required libraries, including `cryptography` for the encryption engine:
 
 ```bash
@@ -61,7 +62,7 @@ The interface will be available at `http://localhost:8501`.
 
 ## Security Architecture
 
-VaultX Pro implements the **Fernet** specification, which guarantees that a message encrypted using it cannot be manipulated or read without the key. 
+VaultX Pro implements the **Fernet** specification, which guarantees that a message encrypted using it cannot be manipulated or read without the key.
 
 **Important Security Practices:**
 
@@ -83,4 +84,4 @@ VaultX Pro implements the **Fernet** specification, which guarantees that a mess
 
 ---
 
-**Developed for secure and private credential management.**
+#### Developed for secure and private credential management.
