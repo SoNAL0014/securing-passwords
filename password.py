@@ -31,13 +31,13 @@ def decrypt_password(token):
 st.set_page_config(page_title="VaultX Pro", page_icon="🔓", layout="wide")
 
 # --- UI LOGIC ---
-st.title("🔓 VaultX Pro: Retrievable Manager")
+st.title("VaultX Pro: Retrievable Manager")
 st.sidebar.info("Your Master Key is stored in 'master.key'. Do not lose this file, or your passwords are gone forever!")
 
-menu = ["➕ Add Password", "📂 View Vault"]
+menu = ["Add Password", "View Vault"]
 choice = st.sidebar.selectbox("Menu", menu)
 
-if choice == "➕ Add Password":
+if choice == "Add Password":
     with st.container():
         st.subheader("Store New Credentials")
         col1, col2 = st.columns(2)
@@ -72,7 +72,7 @@ if choice == "➕ Add Password":
             else:
                 st.error("Please check your inputs.")
 
-elif choice == "📂 View Vault":
+elif choice == "View Vault":
     st.subheader("Your Encrypted Vault")
     
     if os.path.exists(DB_FILE):
