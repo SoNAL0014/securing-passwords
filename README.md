@@ -84,4 +84,4 @@ VaultX Pro implements the **Fernet** specification, which guarantees that a mess
 
 ---
 
-#### Developed for secure and private credential management.
+**Developed for secure and private credential management.**
