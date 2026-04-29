@@ -17,7 +17,6 @@ python --version
 ### 2. Installation
 
 **RECOMMENDED: USE A VIRTUAL ENVIRONMENT(.venv)**
-
 Install the required libraries, including `cryptography` for the encryption engine:
 
 ```bash
@@ -29,7 +28,7 @@ pip install streamlit pandas cryptography
 Launch the Streamlit server from your terminal:\
 
 ```bash
-streamlit run app.py
+streamlit run password.py
 ```
 
 The interface will be available at `http://localhost:8501`.
