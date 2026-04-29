@@ -28,7 +28,7 @@ def decrypt_password(token):
     return cipher.decrypt(token.encode()).decode()
 
 # --- APP CONFIG ---
-st.set_page_config(page_title="VaultX Pro", page_icon="🔓", layout="wide")
+st.set_page_config(page_title="VaultX Pro", page_icon="", layout="wide")
 
 # --- UI LOGIC ---
 st.title("VaultX Pro: Retrievable Manager")
