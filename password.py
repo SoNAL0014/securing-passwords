@@ -48,13 +48,13 @@ def get_password_suggestions(password):
     if len(password) < 8:
         suggestions.append("Use at least 8 characters")
     if not re.search(r"[A-Z]", password):
-        suggestions.append("Add at least one uppercase letter")
+        suggestions.append("Add uppercase letter")
     if not re.search(r"[a-z]", password):
-        suggestions.append("Add at least one lowercase letter")
+        suggestions.append("Add lowercase letter")
     if not re.search(r"[0-9]", password):
-        suggestions.append("Add at least one number")
+        suggestions.append("Add number")
     if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
-        suggestions.append("Add at least one special character")
+        suggestions.append("Add special character")
 
     return suggestions
 
@@ -94,7 +94,6 @@ if choice == "Add Password":
     if pw:
         strength, color = check_password_strength(pw)
 
-        # Convert to percentage
         if strength == "Weak":
             percent = 30
         elif strength == "Medium":
@@ -106,23 +105,22 @@ if choice == "Add Password":
         st.progress(percent)
         st.write(f"Strength Score: {percent}%")
 
-        # Status message
         if percent < 50:
             st.error("Weak password ⚠️")
         elif percent < 80:
-            st.warning("Medium strength password ⚠️")
+            st.warning("Medium password ⚠️")
         else:
             st.success("Strong password ✅")
 
-        # Suggestions
         suggestions = get_password_suggestions(pw)
         if suggestions:
             st.warning("To make your password stronger:")
             for s in suggestions:
                 st.write(f"• {s}")
         else:
-            st.success("✅ Strong password! No changes needed.")
+            st.success("No improvements needed")
 
+    # --- SAVE BUTTON ---
     if st.button("Encrypt & Save"):
         if pw == confirm and site and email:
 
@@ -131,25 +129,30 @@ if choice == "Add Password":
                 with open(DB_FILE, "r") as f:
                     data = json.load(f)
 
-            # 🔁 Duplicate password check
+            # ❌ DUPLICATE CHECK (BLOCK SAVE)
+            duplicate_found = False
             for entry in data:
                 if decrypt_password(entry["password"]) == pw:
-                    st.warning("⚠️ This password is already used!")
+                    duplicate_found = True
                     break
 
-            new_data = {
-                "site": site,
-                "email": email,
-                "password": encrypt_password(pw),
-                "date": datetime.now().strftime("%Y-%m-%d %H:%M")
-            }
+            if duplicate_found:
+                st.error("❌ This password is already used! Try a different one.")
+            else:
+                new_data = {
+                    "site": site,
+                    "email": email,
+                    "password": encrypt_password(pw),
+                    "date": datetime.now().strftime("%Y-%m-%d %H:%M")
+                }
 
-            data.append(new_data)
+                data.append(new_data)
 
-            with open(DB_FILE, "w") as f:
-                json.dump(data, f, indent=4)
+                with open(DB_FILE, "w") as f:
+                    json.dump(data, f, indent=4)
 
-            st.success(f"Saved credentials for {site}")
+                st.success(f"Saved credentials for {site}")
+
         else:
             st.error("Please check your inputs")
 
