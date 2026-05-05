@@ -41,6 +41,23 @@ def check_password_strength(password):
     elif score <= 4: return "Medium", "orange"
     else: return "Strong", "green"
 
+# --- PASSWORD SUGGESTIONS ---
+def get_password_suggestions(password):
+    suggestions = []
+
+    if len(password) < 8:
+        suggestions.append("Use at least 8 characters")
+    if not re.search(r"[A-Z]", password):
+        suggestions.append("Add at least one uppercase letter")
+    if not re.search(r"[a-z]", password):
+        suggestions.append("Add at least one lowercase letter")
+    if not re.search(r"[0-9]", password):
+        suggestions.append("Add at least one number")
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+        suggestions.append("Add at least one special character")
+
+    return suggestions
+
 # --- PASSWORD GENERATOR ---
 def generate_password(length=12):
     chars = string.ascii_letters + string.digits + "!@#$%^&*()"
@@ -50,6 +67,7 @@ def generate_password(length=12):
 st.set_page_config(page_title="VaultX Pro", layout="wide")
 
 st.title("VaultX Pro: Retrievable Manager")
+st.sidebar.info("Your Master Key is stored in 'master.key'. Do not lose it!")
 
 menu = ["Add Password", "View Vault", "Recent Passwords"]
 choice = st.sidebar.selectbox("Menu", menu)
@@ -68,15 +86,42 @@ if choice == "Add Password":
         pw = st.text_input("Password", type="password")
         confirm = st.text_input("Confirm Password", type="password")
 
-        # 🔐 Generator button
         if st.button("Generate Strong Password"):
             pw = generate_password()
             st.success(f"Generated Password: {pw}")
 
-    # 🔐 Strength checker
+    # 🔐 Strength + Progress Bar + Suggestions
     if pw:
         strength, color = check_password_strength(pw)
+
+        # Convert to percentage
+        if strength == "Weak":
+            percent = 30
+        elif strength == "Medium":
+            percent = 65
+        else:
+            percent = 100
+
         st.markdown(f"### Password Strength: :{color}[{strength}]")
+        st.progress(percent)
+        st.write(f"Strength Score: {percent}%")
+
+        # Status message
+        if percent < 50:
+            st.error("Weak password ⚠️")
+        elif percent < 80:
+            st.warning("Medium strength password ⚠️")
+        else:
+            st.success("Strong password ✅")
+
+        # Suggestions
+        suggestions = get_password_suggestions(pw)
+        if suggestions:
+            st.warning("To make your password stronger:")
+            for s in suggestions:
+                st.write(f"• {s}")
+        else:
+            st.success("✅ Strong password! No changes needed.")
 
     if st.button("Encrypt & Save"):
         if pw == confirm and site and email:
@@ -106,7 +151,7 @@ if choice == "Add Password":
 
             st.success(f"Saved credentials for {site}")
         else:
-            st.error("Check inputs")
+            st.error("Please check your inputs")
 
 # --- VIEW VAULT ---
 elif choice == "View Vault":
@@ -123,7 +168,7 @@ elif choice == "View Vault":
                     st.text_input("Password", value=decrypted_pw, key=i)
                     st.write(f"Saved on: {entry['date']}")
         else:
-            st.warning("Vault empty")
+            st.warning("Vault is empty")
     else:
         st.info("No data found")
 
@@ -136,10 +181,9 @@ elif choice == "Recent Passwords":
             data = json.load(f)
 
         if data:
-            # sort by latest
             sorted_data = sorted(data, key=lambda x: x["date"], reverse=True)
 
-            for entry in sorted_data[:5]:  # show last 5
+            for entry in sorted_data[:5]:
                 st.write(f"🔹 {entry['site']} ({entry['email']}) - {entry['date']}")
         else:
             st.warning("No recent passwords")
